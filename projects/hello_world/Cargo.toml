@@ -7,4 +7,4 @@ edition = "2024"
 
 [[bin]]
 name = "hello_world"
-path = "hello_world.rs"
+path = "src/hello_world.rs"

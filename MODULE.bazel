@@ -1,0 +1,6 @@
+"""Bazel module for the learning monorepo."""
+
+module(
+    name = "learning_rust",
+    version = "0.1.0",
+)

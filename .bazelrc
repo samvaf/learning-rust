@@ -1,0 +1,3 @@
+# Bazel's defaults hide the failing command line and the output of failing tests.
+build --verbose_failures
+test --test_output=errors

@@ -55,14 +55,15 @@ pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 pip.parse(
     hub_name = "pypi",
     python_version = PYTHON_VERSION,
-    requirements_lock = "//third_party/python:requirements_lock.txt",
+    requirements_lock = "//:requirements_lock.txt",
 )
 use_repo(pip, "pypi")
 
-# uv is the Python package manager: `bazel run //third_party/python:requirements.update`
-# resolves //:pyproject.toml into the lockfile that pip.parse reads above.
+# uv resolves the Python workspace. Pinned here so every machine and CI run use
+# the same uv, the same way rules_rust pins cargo for crate_universe.
 uv = use_extension("@rules_python//python/uv:uv.bzl", "uv")
 uv.configure(version = "0.12.13")
 use_repo(uv, "uv")
 
 register_toolchains("@uv//:all")
+

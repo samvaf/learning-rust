@@ -1,0 +1,25 @@
+load("@pypi//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+
+# imports = ["src"] puts src/ on sys.path, so `from greeter import greet` works
+# from both main.py and the tests.
+py_library(
+    name = "greeter",
+    srcs = ["src/greeter.py"],
+    imports = ["src"],
+)
+
+py_binary(
+    name = "main",
+    srcs = ["src/main.py"],
+    deps = [":greeter"],
+)
+
+py_test(
+    name = "greeter_test",
+    srcs = ["tests/greeter_test.py"],
+    deps = [
+        ":greeter",
+        requirement("pytest"),
+    ],
+)

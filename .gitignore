@@ -21,3 +21,7 @@
 # ---- Misc ----
 /dist/
 /out/
+
+# ---- Bazel ----
+# Convenience symlinks created in the workspace root by every build.
+/bazel-*

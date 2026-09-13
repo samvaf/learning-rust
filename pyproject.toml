@@ -1,0 +1,5 @@
+# uv workspace. Each package declares its own dependencies in its own
+# pyproject.toml; uv resolves them all into requirements_lock.txt, which Bazel's
+# pip.parse reads. This is the Python counterpart of Cargo.toml's members list.
+[tool.uv.workspace]
+members = ["projects/greeter"]

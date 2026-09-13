@@ -1,0 +1,16 @@
+"""Root package: workspace manifests, lockfiles, and the Python lock target."""
+
+load("//:uv_lock.bzl", "uv_lock")
+
+exports_files([
+    "Cargo.toml",
+    "Cargo.lock",
+    "Cargo.Bazel.lock",
+    "requirements_lock.txt",
+])
+
+# bazel run //:requirements.update
+uv_lock(
+    name = "requirements.update",
+    tags = ["manual"],
+)

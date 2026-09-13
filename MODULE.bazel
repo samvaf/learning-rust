@@ -1,0 +1,69 @@
+"""Bazel module for the learning monorepo."""
+
+module(
+    name = "learning_rust",
+    version = "0.1.0",
+)
+
+###############################################################################
+# Rust
+###############################################################################
+
+bazel_dep(name = "rules_rust", version = "0.74.0")
+
+RUST_EDITION = "2024"
+
+RUST_VERSION = "1.98.0"
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = RUST_EDITION,
+    versions = [RUST_VERSION],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
+
+# Third-party crates come from the Cargo workspace, so Cargo.toml/Cargo.lock stay
+# the single source of truth and `cargo` keeps working alongside `bazel`.
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    cargo_lockfile = "//:Cargo.lock",
+    # Pins the generated Bazel rendering so CI does not re-resolve the crate
+    # graph on every cold checkout. Refresh with CARGO_BAZEL_REPIN=1.
+    lockfile = "//:Cargo.Bazel.lock",
+    manifests = ["//:Cargo.toml"],
+)
+use_repo(crate, "crates")
+
+###############################################################################
+# Python
+###############################################################################
+
+bazel_dep(name = "rules_python", version = "1.9.2")
+
+PYTHON_VERSION = "3.13"
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    is_default = True,
+    python_version = PYTHON_VERSION,
+)
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "pypi",
+    python_version = PYTHON_VERSION,
+    requirements_lock = "//:requirements_lock.txt",
+)
+use_repo(pip, "pypi")
+
+# uv resolves the Python workspace. Pinned here so every machine and CI run use
+# the same uv, the same way rules_rust pins cargo for crate_universe.
+uv = use_extension("@rules_python//python/uv:uv.bzl", "uv")
+uv.configure(version = "0.12.13")
+use_repo(uv, "uv")
+
+register_toolchains("@uv//:all")
+

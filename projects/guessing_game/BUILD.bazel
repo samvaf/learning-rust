@@ -1,0 +1,8 @@
+load("@crates//:defs.bzl", "all_crate_deps")
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+rust_binary(
+    name = "guessing_game",
+    srcs = ["src/main.rs"],
+    deps = all_crate_deps(normal = True),
+)

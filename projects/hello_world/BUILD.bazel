@@ -1,0 +1,7 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+# Entrypoint is hello_world.rs, matching the [[bin]] override in Cargo.toml.
+rust_binary(
+    name = "hello_world",
+    srcs = ["src/hello_world.rs"],
+)

@@ -1,0 +1,8 @@
+"""Root package: exposes the workspace dependency manifests to Bazel."""
+
+exports_files([
+    "Cargo.toml",
+    "Cargo.lock",
+    "Cargo.Bazel.lock",
+    "pyproject.toml",
+])

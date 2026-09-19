@@ -33,3 +33,27 @@ jobs:
 
       - name: Test
         run: bazel test //...
+
+  locks:
+    name: Lockfiles up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      # Re-resolves both languages. Needs the network: cargo and uv each hit
+      # their registries.
+      - name: Regenerate lockfiles
+        run: ./tools/relock.sh
+
+      # --exit-code fails the job when anything moved, and prints the diff that
+      # should have been committed.
+      - name: Check nothing changed
+        run: |
+          git diff --exit-code -- \
+            Cargo.lock Cargo.Bazel.lock uv.lock requirements_lock.txt

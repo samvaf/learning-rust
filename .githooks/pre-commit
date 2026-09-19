@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+
+LOCKFILES=(Cargo.lock Cargo.Bazel.lock uv.lock requirements_lock.txt)
+./tools/relock.sh >/dev/null
+
+if ! git diff --quiet -- "${LOCKFILES[@]}"; then
+    echo "Lockfiles are stale - regenerated them:"
+    git diff --stat -- "${LOCKFILES[@]}"
+    echo
+    echo "Review, then: git add ${LOCKFILES[*]}"
+    exit 1
+fi

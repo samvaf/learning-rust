@@ -37,6 +37,8 @@ ENV RUSTUP_HOME=/home/${USERNAME}/.rustup \
     CARGO_HOME=/home/${USERNAME}/.cargo
 ENV PATH="${CARGO_HOME}/bin:${PATH}"
 
-# Install Rust toolchain as the non-root user
 RUN curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf \
-    | sh -s -- -y --no-modify-path
+    | sh -s -- -y --no-modify-path --default-toolchain none
+
+COPY rust-toolchain.toml /tmp/rust-toolchain.toml
+RUN cd /tmp && rustup show
